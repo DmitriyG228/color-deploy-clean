@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars (gitignored). project_slug can also be set in .env and passed via make.
+
+linode_token = "your-linode-api-token-here"
+region       = "us-ord"
+
+# Optional: override VM label when not using blue/green (color set by apply-stack.sh)
+# vm_label = "my-app-staging"
+
+# Optional: SSH public key for VM access (or set via Makefile from ~/.ssh)
+# ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQ..."

@@ -1,0 +1,29 @@
+# Secrets (never commit)
+terraform/terraform.tfvars
+terraform/terraform.tfvars.json
+.env
+.env.local
+.env.*.local
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+credentials
+secrets.yaml
+secrets.yml
+tmp-*.json
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfstate.d/
+
+# Local
+*.backup
+.bin/
+.DS_Store
+*.log
+validate-result.txt
+.validate-body
