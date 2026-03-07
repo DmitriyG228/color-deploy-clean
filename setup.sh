@@ -94,7 +94,11 @@ print_success "DNS: $DOMAIN -> $VM_IP"
 print_info "Waiting 30s for DNS..."
 sleep 30
 
-print_header "Step 2/3: Install Caddy on VM"
+print_header "Step 2/4: Harden VM (UFW + SSH)"
+"$SCRIPT_DIR/scripts/harden-vm.sh" "$COLOR"
+print_success "VM hardened"
+
+print_header "Step 3/4: Install Caddy on VM"
 INSTALL_SCRIPT='set -e
 if command -v caddy &>/dev/null; then echo "Caddy already installed"; else
   # Wait for dpkg lock (Ubuntu automatic updates on first boot)
@@ -107,15 +111,12 @@ if command -v caddy &>/dev/null; then echo "Caddy already installed"; else
   curl -1sLf "https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt" | tee /etc/apt/sources.list.d/caddy-stable.list
   apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq caddy
 fi
-# Allow Caddy (running as caddy user) to bind to 80/443
 setcap cap_net_bind_service=+ep /usr/bin/caddy 2>/dev/null || true
-# If ufw is enabled, ensure 80/443 (and 22) are allowed for ACME and HTTPS
-if command -v ufw &>/dev/null; then ufw allow 22 2>/dev/null; ufw allow 80 2>/dev/null; ufw allow 443 2>/dev/null; fi
 echo "Caddy installed"'
 ssh -o StrictHostKeyChecking=accept-new "root@$VM_IP" "bash -s" <<< "$INSTALL_SCRIPT"
 print_success "Caddy installed"
 
-print_header "Step 3/3: SSL/HTTPS"
+print_header "Step 4/4: SSL/HTTPS"
 # Caddy requires newline after '{' in block directives (e.g. log { ... })
 # /health works without backend; / is reverse_proxy to API_PORT (502 if nothing on 8000)
 CADDYFILE="$DOMAIN {

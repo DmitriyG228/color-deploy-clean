@@ -51,6 +51,14 @@ setup-prod-%:
 clone-app-%:
 	@./scripts/clone-app.sh $* $(BRANCH)
 
+# === Security ===
+
+.PHONY: harden-%
+harden-%:
+	@./scripts/harden-vm.sh $*
+
+# === Diagnostics ===
+
 .PHONY: which-prod ssh-config-% ssh-config diagnose-% validate-% status help
 which-prod:
 	@./scripts/which-prod.sh
@@ -71,4 +79,26 @@ status:
 	@echo "  LIVE_DOMAIN=$(LIVE_DOMAIN) STAGING_DOMAIN=$(STAGING_DOMAIN)"
 
 help:
-	@echo "init, deploy-<color>, plan-<color>, destroy-<color>, output-<color>, setup-staging-<color>, setup-prod-<color>, prod-point-<color>, staging-point-<color>, which-prod, ssh-config-<color>, diagnose-<color>, validate-<color>, clone-app-<color>, status"
+	@echo "=== Infrastructure ==="
+	@echo "  init                  terraform init"
+	@echo "  deploy-<color>        Provision VM"
+	@echo "  destroy-<color>       Destroy VM (safe: checks prod)"
+	@echo ""
+	@echo "=== Setup ==="
+	@echo "  setup-staging-<color> DNS + harden + Caddy + HTTPS (staging)"
+	@echo "  setup-prod-<color>    DNS + harden + Caddy + HTTPS (prod)"
+	@echo "  harden-<color>        Harden VM only (UFW + SSH key-only)"
+	@echo ""
+	@echo "=== DNS ==="
+	@echo "  prod-point-<color>    Point prod domain to color"
+	@echo "  staging-point-<color> Point staging domain to color"
+	@echo "  which-prod            Show current prod color"
+	@echo ""
+	@echo "=== App ==="
+	@echo "  clone-app-<color>     Clone app repo to VM"
+	@echo ""
+	@echo "=== Diagnostics ==="
+	@echo "  status                Show all deployments"
+	@echo "  diagnose-<color>      Caddy diagnostics"
+	@echo "  validate-<color>      HTTPS validation"
+	@echo "  ssh-config-<color>    Update SSH config"
